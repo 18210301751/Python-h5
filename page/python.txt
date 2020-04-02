@@ -1,0 +1,33 @@
+from openpyxl import load_workbook
+from openpyxl import Workbook
+import json
+
+
+wb = load_workbook('358个收费站数据-电子围栏-所有信息-finish.xlsx')
+ws = wb['Sheet1']
+# Instance = LngLatTransfer()             #python 中先对类方法进行实例，再使用类方法
+
+json_arr_3=[]
+json_map_3={'name':'地图坐标的名称和实际坐标'}
+i_num=1
+for i in range(2,349):
+    if (str(ws.cell(row=i,column=15).value)!='0'):
+        continue
+    lng=str(ws.cell(row=i,column=10).value)
+    lat=str(ws.cell(row=i,column=11).value)
+    if(str(lng)=='None'or str(lat)=='None'):
+        lng=str(ws.cell(row=i,column=12).value)
+        lat=str(ws.cell(row=i,column=13).value)
+#         lng_w = 114.80949366 #经度
+#         lat_w = 27.7723911 #纬度
+#         result = Instance.WGS84_to_GCJ02(lng_w,lat_w)
+#         lat=str(result[0])
+#         lng=str(result[1])
+    lat_lng_map={'key':str(ws.cell(row=i,column=2).value)+'_'+str(ws.cell(row=i,column=9).value),
+             'value':'['+lng+','+lat+']'}
+    json_arr_3.append(lat_lng_map)
+json_map_3['data']=json_arr_3
+print(json_map_3)
+json_str = json.dumps(json_map_3, indent=4,ensure_ascii=False)
+with open('358_lat_lng_data_3.json', 'w') as json_file:
+    json_file.write(json_str)
